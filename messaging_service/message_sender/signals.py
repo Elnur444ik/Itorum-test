@@ -19,5 +19,3 @@ def create_message(sender, instance, created, *args, **kwargs):
         else:
             send_message.apply_async((message.id, client.id, mailing.id), eta=mailing.start_datetime,
                                      expires=mailing.end_datetime)
-    else:
-        print(f'Рассылка № {mailing.id} завершена')
