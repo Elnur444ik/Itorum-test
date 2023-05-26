@@ -16,6 +16,4 @@ def send_message(message_id, client_id, mailing_id):
         # Вводим дополнительную проверку из-за особенности работы eta в celery
         print(f'{datetime.now()}: Сообщение {message.id} отправлено на номер {client.phone_number} по рассылке '
               f'№ {mailing.id}')
-    else:
-        print(f'Рассылка № {mailing.id} завершена')
 

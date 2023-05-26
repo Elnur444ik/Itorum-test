@@ -16,6 +16,8 @@ def create_message(sender, instance, created, *args, **kwargs):
         message = Message.objects.create(mailing=mailing.id, client=client.id)
         if mailing.start_datetime <= datetime.now() <= mailing.end_datetime:
             send_message.apply_async((message.id, client.id, mailing.id), expires=mailing.end_datetime)
-        elif datetime.now() < mailing.start_datetime:
+        else:
             send_message.apply_async((message.id, client.id, mailing.id), eta=mailing.start_datetime,
                                      expires=mailing.end_datetime)
+    else:
+        print(f'Рассылка № {mailing.id} завершена')
