@@ -1,8 +1,8 @@
 import os
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'messaging_service')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '')
 
-app = Celery('send_message')
+app = Celery('messaging_service')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()

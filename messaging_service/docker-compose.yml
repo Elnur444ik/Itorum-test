@@ -33,18 +33,20 @@ services:
       - db
       - web-app
 
-  celery-worker:
+  celery_worker:
     build:
       context: .
     hostname: celery_worker
     entrypoint: celery
-    command: -A messaging_service/celery.app worker --loglevel=info
+    command: celery worker --app=messaging_service --loglevel=info
     volumes:
       - .:/mailing_service
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     links:
       - redis
     depends_on:
       - db
       - web-app
       - redis
-

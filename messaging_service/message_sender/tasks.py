@@ -1,8 +1,6 @@
 from datetime import datetime
 
-from celery.utils.log import get_task_logger
-
-from messaging_service.celery import app
+from messaging_service.messaging_service.celery import app
 from .models import Message, Client, Mailing
 
 
