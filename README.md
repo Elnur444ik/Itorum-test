@@ -2,7 +2,7 @@
 Установка проекта с помощью docker-compose:
 Склонировать репозиторий с Github
 
-> git@github.com:Elnur444ik/Itorum-test.git
+> git clone git@github.com:Elnur444ik/Itorum-test.git
 
 Перейти в директорию проекта
 
