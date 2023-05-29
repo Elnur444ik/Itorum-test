@@ -7,7 +7,7 @@
 Перейти в директорию проекта
 
 Запустить контейнеры
-> docker-compose up -d
+> docker-compose up
 
 Остановка работы контейнеров
 > docker-compose stop
