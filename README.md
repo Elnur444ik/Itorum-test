@@ -1,4 +1,18 @@
 # Itorum-test
+Установка проекта с помощью docker-compose:
+Склонировать репозиторий с Github
+
+> git@github.com:Elnur444ik/Itorum-test.git
+
+Перейти в директорию проекта
+
+Запустить контейнеры
+> docker-compose up -d
+
+Остановка работы контейнеров
+> docker-compose stop
+
+
 Задача
 Необходимо разработать сервис управления.
 Описание
