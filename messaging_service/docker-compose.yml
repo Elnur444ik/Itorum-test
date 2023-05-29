@@ -1,13 +1,13 @@
 version: '3'
 services:
-  db:
-    image: postgres:14.6-alpine
-    environment:
-      - POSTGRES_DB=mailing_service
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=pass
-    volumes:
-      - ./postgres_data:/var/lib/postgresql/data/
+#  db:
+#    image: postgres:14.6-alpine
+#    environment:
+#      - POSTGRES_DB=mailing_service
+#      - POSTGRES_USER=dbuser
+#      - POSTGRES_PASSWORD=pass
+#    volumes:
+#      - ./postgres_data:/var/lib/postgresql/data/
 
   web-app:
     build:
@@ -23,22 +23,21 @@ services:
       - DB_PASS=pass
     command: >
       sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
-    depends_on:
-      - db
+#    depends_on:
+#      - db
 
   redis:
     image: redis:7.0.5-alpine
     hostname: redis
     depends_on:
-      - db
+#      - db
       - web-app
 
   celery_worker:
     build:
       context: .
     hostname: celery_worker
-    entrypoint: celery
-    command: celery worker --app=messaging_service --loglevel=info
+    command: celery -A messaging_service worker -l info
     volumes:
       - .:/mailing_service
     environment:
@@ -47,6 +46,23 @@ services:
     links:
       - redis
     depends_on:
-      - db
+#      - db
       - web-app
       - redis
+
+  flower:
+    build:
+      context: .
+    hostname: flower
+    entrypoint: celery
+    command: -A messaging_service flower
+    volumes:
+      - .:/mailing_service
+    links:
+      - redis
+    depends_on:
+      # - db
+      - web-app
+      - redis
+    ports:
+      - "5555:5555"

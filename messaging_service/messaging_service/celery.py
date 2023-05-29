@@ -1,7 +1,7 @@
 import os
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', '')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'messaging_service.settings')
 
 app = Celery('messaging_service')
 app.config_from_object('django.conf:settings', namespace='CELERY')
