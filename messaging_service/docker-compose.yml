@@ -1,5 +1,6 @@
 version: '3'
 services:
+
 #  db:
 #    image: postgres:14.6-alpine
 #    environment:
@@ -8,6 +9,10 @@ services:
 #      - POSTGRES_PASSWORD=pass
 #    volumes:
 #      - ./postgres_data:/var/lib/postgresql/data/
+#    ports:
+#      - '5432'
+#    networks:
+#      - djangonetwork
 
   web-app:
     build:
@@ -25,6 +30,8 @@ services:
       sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
 #    depends_on:
 #      - db
+#    networks:
+#      - djangonetwork
 
   redis:
     image: redis:7.0.5-alpine
@@ -32,6 +39,8 @@ services:
     depends_on:
 #      - db
       - web-app
+#    networks:
+#      - djangonetwork
 
   celery_worker:
     build:
@@ -49,6 +58,8 @@ services:
 #      - db
       - web-app
       - redis
+#    networks:
+#      - djangonetwork
 
   flower:
     build:
@@ -61,8 +72,14 @@ services:
     links:
       - redis
     depends_on:
-      # - db
+#      - db
       - web-app
       - redis
     ports:
       - "5555:5555"
+#    networks:
+#      - djangonetwork
+
+#networks:
+#  djangonetwork:
+#    driver: bridge

@@ -13,21 +13,18 @@ local = pytz.timezone('Europe/Moscow')
 @receiver(post_save, sender=Mailing, dispatch_uid="create_message")
 def create_message(sender, instance, created, **kwargs):
     if created:
-        mailing = Mailing.objects.filter(id=instance.id).first()
-        if mailing.mobile_operator_code or mailing.client_tag:
-            clients = Client.objects.filter(
-                Q(mobile_operator_code=mailing.mobile_operator_code) | Q(client_tag=mailing.client_tag)
-            ).all()
-        else:
-            clients = Client.objects.all()
+
+        clients = Client.objects.filter(
+            Q(mobile_operator_code=instance.mobile_operator_code) | Q(client_tag=instance.client_tag)
+        ).all() if instance.mobile_operator_code or instance.client_tag else Client.objects.all()
 
         for client in clients:
 
-            if mailing.start_datetime <= datetime.now() <= mailing.end_datetime:
-                send_message.apply_async((client.id, mailing.id), expires=mailing.end_datetime)
+            if instance.start_datetime <= datetime.now() <= instance.end_datetime:
+                send_message.apply_async((client.id, instance.id), expires=instance.end_datetime)
             else:
-                naive = datetime.strptime(str(mailing.start_datetime), "%Y-%m-%d %H:%M:%S")
+                naive = datetime.strptime(str(instance.start_datetime), "%Y-%m-%d %H:%M:%S")
                 local_dt = local.localize(naive, is_dst=None)
                 utc_start_time = local_dt.astimezone(pytz.utc)
-                send_message.apply_async((client.id, mailing.id), eta=utc_start_time,
-                                         expires=mailing.end_datetime)
+                send_message.apply_async((client.id, instance.id), eta=utc_start_time,
+                                         expires=instance.end_datetime)
